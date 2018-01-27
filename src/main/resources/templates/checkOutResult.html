@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+    <head>
+        <title>Check Out Results</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+
+    <body>
+        <h1>Receipt</h1>
+        <p th:text="'Id: ' + ${superMarket.id}"/>
+        <p th:text="'Name: ' + ${superMarket.name}"/>
+        <a href="/supermarket">Shop again</a>
+    </body>
+
+</html>

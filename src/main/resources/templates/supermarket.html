@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+
+    <head>
+        <title>Qikserve Supermarket</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.min.css}" />
+
+        <script th:src="@{/webjars/bootstrap/4.0.0/js/bootstrap.min.js}"></script>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#">Qikserve Supermarket</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div th:if="${not #lists.isEmpty(items)}">
+            <h2>Item List</h2>
+            <table style="width: 95%" class="table table-bordered" >
+                <thead>
+                    <tr>
+                        <th scope="col">Item Name</th>
+                        <th scope="col">Cost</th>
+                        <th scope="col">Quantity to Add to Cart</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${items}">
+                    <td scope="row" th:text="${item.name}"></td>
+                    <td th:text="${item.cost}"></td>
+                    <td>
+                        <form>
+                            <p>Quantity: <input type="text"/><input type="submit" value="Add to Basket"/></p>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!--<form action="#" th:action="@{/supermarket}" th:object="${superMarket}" method="post">
+                <p>Id: <input type="text" th:field="*{id}"/></p>
+                <p>Name: <input type="text" th:field="*{name}"/></p>
+                <p><input type="submit" value="Submit"/><input type="reset" value="Reset"/></p>
+            </form>-->
+        </div>
+        <div>
+            <input type="submit" value="Check Out"/>
+        </div>
+    </body>
+
+</html>
