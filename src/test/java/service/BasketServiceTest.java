@@ -7,11 +7,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
@@ -21,6 +21,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BasketService.class)
 @EntityScan("org.iainbo.supermarketcheckout.entities")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class BasketServiceTest {
 
     @Autowired
@@ -38,9 +39,6 @@ public class BasketServiceTest {
 
     @Before
     public void setUp(){
-
-        basketService = new BasketService();
-
         biscuitItem1 = new Item("biscuit", BigDecimal.valueOf(1.29));
         biscuitItem1.setId(1L);
         biscuitItem2 = new Item("biscuit", BigDecimal.valueOf(1.29));
@@ -107,14 +105,19 @@ public class BasketServiceTest {
     @Test
     public void testTotalingOfBasketBeforeDiscountForThreeOfTheSameItems(){
         Item biscuitItem3 = new Item("biscuit", BigDecimal.valueOf(1.29));
+        biscuitItem3.setId(1L);
 
         basketService.addItemToBasket(biscuitItem1);
         basketService.addItemToBasket(biscuitItem2);
         basketService.addItemToBasket(biscuitItem3);
 
+        when(mockItemRepository.findById(biscuitItem1.getId())).thenReturn(biscuitItem1);
+        when(mockItemRepository.findById(biscuitItem2.getId())).thenReturn(biscuitItem2);
+        when(mockItemRepository.findById(biscuitItem3.getId())).thenReturn(biscuitItem3);
+
         BigDecimal expectedTotal = biscuitItem1.getCost().add(biscuitItem2.getCost().add(biscuitItem3.getCost()));
 
-        Assert.assertEquals(basketService.totalCostBeforeDiscount(), expectedTotal);
+        Assert.assertEquals(expectedTotal, basketService.totalCostBeforeDiscount());
 
     }
 
@@ -127,7 +130,9 @@ public class BasketServiceTest {
 
         BigDecimal expectedTotal = juiceItem.getCost().add(juiceItem2.getCost());
 
-        Assert.assertEquals(basketService.getItemCount(), 2);
+        Long amountInBasket = basketService.getBasket().get(juiceItem.getId());
+
+        Assert.assertEquals(Long.valueOf(2), amountInBasket);
 
         basketService.applyOffers();
 

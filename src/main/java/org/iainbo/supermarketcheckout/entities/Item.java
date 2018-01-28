@@ -1,19 +1,23 @@
 package org.iainbo.supermarketcheckout.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name="ITEMS")
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name="NAME")
+    @NotNull
     private String name;
+
+    @Column(name="COST")
+    @NotNull
     private BigDecimal cost;
 
     public Item(){

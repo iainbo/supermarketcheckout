@@ -14,16 +14,16 @@ import java.math.BigDecimal;
 public class DatabaseLoader implements CommandLineRunner{
 
     private final ItemRepository itemRepository;
-    //private final OfferRepository offerRepository;
+    private final OfferRepository offerRepository;
 
     private Item biscuits = new Item("Biscuits", BigDecimal.valueOf(1.29));
     private Item juice = new Item("Can of Juice", BigDecimal.valueOf(0.53));
     private Item microwaveMeal = new Item("Microwave Meal", BigDecimal.valueOf(3.50));
 
     @Autowired
-    public DatabaseLoader(ItemRepository itemRepository){
+    public DatabaseLoader(ItemRepository itemRepository, OfferRepository offerRepository){
         this.itemRepository = itemRepository;
-        //this.offerRepository = offerRepository;
+        this.offerRepository = offerRepository;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class DatabaseLoader implements CommandLineRunner{
         this.itemRepository.save(juice);
         this.itemRepository.save(microwaveMeal);
 
-        //this.offerRepository.save(new Offer(juice, "Buy 2 get 1 Free", BigDecimal.ZERO));
-        //this.offerRepository.save(new Offer(microwaveMeal, "2 for £5", BigDecimal.valueOf(1.50)));
+        this.offerRepository.save(new Offer(juice, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L));
+        this.offerRepository.save(new Offer(microwaveMeal, "2 for £5", BigDecimal.valueOf(1.50), 2L));
     }
 }

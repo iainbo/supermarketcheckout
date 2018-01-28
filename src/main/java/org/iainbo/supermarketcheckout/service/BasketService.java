@@ -3,10 +3,7 @@ package org.iainbo.supermarketcheckout.service;
 import org.iainbo.supermarketcheckout.entities.Item;
 import org.iainbo.supermarketcheckout.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -36,15 +33,25 @@ public class BasketService {
     }
 
     public BigDecimal totalCostBeforeDiscount(){
-        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal total = BigDecimal.valueOf(0L);
 
         for(Long itemId : basket.keySet()){
+            Long quantity = basket.get(itemId);
             Item item = itemRepository.findById(itemId);
-            BigDecimal itemCost = item.getCost();
-            total.add(itemCost);
+            BigDecimal itemCost = item.getCost().multiply(BigDecimal.valueOf(quantity));
+            total = total.add(itemCost);
         }
 
         return total;
+    }
+
+    public void applyOffers(){
+        for(Long itemId : basket.keySet()){
+
+            /*if(itemHasOffer()){
+
+            }*/
+        }
     }
 
     private boolean itemHasOffer(Item item){

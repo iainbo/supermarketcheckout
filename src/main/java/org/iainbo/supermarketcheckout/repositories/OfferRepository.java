@@ -10,7 +10,7 @@ public interface OfferRepository extends Repository<Offer, Long>{
 
     Offer save(Offer offer);
 
-    //Offer findByItem(Item item);
+    Offer findByItem(Item item);
 
     List<Offer> findAll();
 }

@@ -1,28 +1,42 @@
 package org.iainbo.supermarketcheckout.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name="OFFERS")
 public class Offer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    //private Item item;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ITEM_ID")
+    private Item item;
+
+    @Column(name="DESCRIPTION")
+    @NotNull
     private String description;
+
+    @Column(name="NEW_COST")
+    @NotNull
     private BigDecimal newCost;
+
+    @Column(name="AMOUNT_TO_QUALIFY")
+    @NotNull
     private Long amountToQualify;
 
     public Offer(){
 
     }
 
-    public Offer(String description, BigDecimal newCost){
-        //this.item = item;
+    public Offer(Item item, String description, BigDecimal newCost, Long amountToQualify){
+        this.item = item;
         this.description = description;
         this.newCost = newCost;
+        this.amountToQualify = amountToQualify;
     }
 
     public Long getId() {
@@ -33,13 +47,13 @@ public class Offer {
         this.id = id;
     }
 
-    /*public Item getItem() {
+    public Item getItem() {
         return item;
     }
 
     public void setItem(Item item) {
         this.item = item;
-    }*/
+    }
 
     public String getDescription() {
         return description;
