@@ -1,17 +1,16 @@
-package org.iainbo.supermarketcheckout.view;
+package org.iainbo.supermarketcheckout.controller;
 
 import org.iainbo.supermarketcheckout.entities.SuperMarket;
 import org.iainbo.supermarketcheckout.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class WebController {
+public class ItemController {
 
     @Autowired
     private ItemRepository itemRepository;
