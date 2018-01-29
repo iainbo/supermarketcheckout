@@ -69,9 +69,12 @@ public class BasketService {
     private BigDecimal applyOffer(Offer offer, Long itemId){
         BigDecimal newTotal = BigDecimal.ZERO;
         Item item = itemRepository.findById(itemId);
-        if(offer.getName().equals("BOGOF")){
+        if(offer.getName().equals("B2G1F")){
             newTotal = totalCostBeforeDiscount();
-            addItemToBasket(item);
+            long noOfItemsToBeAdded = basket.get(itemId) / 2;
+            for(int i = 0; i < noOfItemsToBeAdded; i++){
+                addItemToBasket(item);
+            }
         }if(offer.getName().equals("2FOR5")){
             newTotal = totalCostBeforeDiscount().subtract(BigDecimal.valueOf(2));
         }

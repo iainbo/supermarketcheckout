@@ -133,7 +133,7 @@ public class BasketServiceTest {
         Item juiceItem2 = new Item("Can of Juice", BigDecimal.valueOf(0.53));
         juiceItem2.setId(juiceItem.getId());
 
-        Offer juiceOffer = new Offer("BOGOF", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
+        Offer juiceOffer = new Offer("B2G1F", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
         juiceOffer.setId(1L);
 
         List<Offer> offers = new ArrayList<>();
@@ -156,6 +156,48 @@ public class BasketServiceTest {
         BigDecimal actualCostAfterDiscount = basketService.applyOfferAndGetNewTotal();
 
         Assert.assertEquals(Long.valueOf(3), basketService.getBasket().get(juiceItem.getId()));
+        Assert.assertEquals(expectedTotal, actualCostAfterDiscount);
+        Assert.assertEquals(actualCostBeforeDiscount, actualCostAfterDiscount);
+    }
+
+    @Test
+    public void testApplyingJuiceOfferToFourCans(){
+        Item juiceItem2 = new Item("Can of Juice", BigDecimal.valueOf(0.53));
+        juiceItem2.setId(juiceItem.getId());
+
+        Item juiceItem3 = new Item("Can of Juice", BigDecimal.valueOf(0.53));
+        juiceItem3.setId(juiceItem.getId());
+
+        Item juiceItem4 = new Item("Can of Juice", BigDecimal.valueOf(0.53));
+        juiceItem4.setId(juiceItem.getId());
+
+        Offer juiceOffer = new Offer("B2G1F", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
+        juiceOffer.setId(1L);
+
+        List<Offer> offers = new ArrayList<>();
+        offers.add(juiceOffer);
+
+        basketService.addItemToBasket(juiceItem);
+        basketService.addItemToBasket(juiceItem2);
+        basketService.addItemToBasket(juiceItem3);
+        basketService.addItemToBasket(juiceItem4);
+
+        when(mockItemRepository.findById(juiceItem.getId())).thenReturn(juiceItem);
+        when(mockItemRepository.findById(juiceItem2.getId())).thenReturn(juiceItem2);
+        when(mockItemRepository.findById(juiceItem3.getId())).thenReturn(juiceItem3);
+        when(mockItemRepository.findById(juiceItem4.getId())).thenReturn(juiceItem4);
+        when(mockOfferRepository.findAll()).thenReturn(offers);
+
+        BigDecimal expectedTotal = juiceItem.getCost().add(juiceItem2.getCost().add(juiceItem3.getCost()).add(juiceItem4.getCost()));
+
+        Long amountInBasket = basketService.getBasket().get(juiceItem.getId());
+
+        Assert.assertEquals(Long.valueOf(4), amountInBasket);
+
+        BigDecimal actualCostBeforeDiscount = basketService.totalCostBeforeDiscount();
+        BigDecimal actualCostAfterDiscount = basketService.applyOfferAndGetNewTotal();
+
+        Assert.assertEquals(Long.valueOf(6), basketService.getBasket().get(juiceItem.getId()));
         Assert.assertEquals(expectedTotal, actualCostAfterDiscount);
         Assert.assertEquals(actualCostBeforeDiscount, actualCostAfterDiscount);
     }

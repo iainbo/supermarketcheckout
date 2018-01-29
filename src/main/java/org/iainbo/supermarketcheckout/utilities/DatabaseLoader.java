@@ -32,7 +32,7 @@ public class DatabaseLoader implements CommandLineRunner{
         this.itemRepository.save(juice);
         this.itemRepository.save(microwaveMeal);
 
-        this.offerRepository.save(new Offer("BOGOF", juice, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L));
+        this.offerRepository.save(new Offer("B2G1F", juice, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L));
         this.offerRepository.save(new Offer("2FOR5", microwaveMeal, "2 for £5", BigDecimal.valueOf(1.50), 2L));
     }
 }
