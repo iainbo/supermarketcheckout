@@ -1,13 +1,15 @@
 package org.iainbo.supermarketcheckout.controller;
 
-import org.iainbo.supermarketcheckout.entities.SuperMarket;
+import org.iainbo.supermarketcheckout.model.Basket;
+import org.iainbo.supermarketcheckout.model.Item;
 import org.iainbo.supermarketcheckout.repositories.ItemRepository;
+import org.iainbo.supermarketcheckout.service.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class ItemController {
@@ -15,20 +17,23 @@ public class ItemController {
     @Autowired
     private ItemRepository itemRepository;
 
-    @RequestMapping("/supermarket")
+    @Autowired
+    private BasketService basketService;
+
+    @RequestMapping(value="/supermarket")
     public String listItems(Model model){
+        Basket basket = new Basket();
+        basket.setItems(itemRepository.findAll());
+        model.addAttribute("basket", basket);
         model.addAttribute("items", itemRepository.findAll());
         return "supermarket";
     }
 
-    /*@GetMapping("/supermarket")
-    public String itemListForm(Model model){
-        model.addAttribute("superMarket", new SuperMarket());
-        return "supermarket";
-    }*/
+    @RequestMapping(value="/processForm", method = RequestMethod.POST)
+    public String basketSubmit(@ModelAttribute("basket") Basket basket, @ModelAttribute("item") Item item){
 
-    @PostMapping("/supermarket")
-    public String basketSubmit(@ModelAttribute SuperMarket superMarket){
+        basket.setTotalCost(basketService.totalCostBeforeDiscount());
+        basket.setCostAfterOffersApplied(basketService.applyOfferAndGetNewTotal());
         return "checkOutResult";
     }
 }

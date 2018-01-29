@@ -21,12 +21,13 @@
         </div>
         <div th:if="${not #lists.isEmpty(items)}">
             <h2>Item List</h2>
+            <form action="#" th:action="@{/processForm}" th:object="${basket}" method="post">
             <table style="width: 95%" class="table table-bordered" >
                 <thead>
                     <tr>
                         <th scope="col">Item Name</th>
                         <th scope="col">Cost</th>
-                        <th scope="col">Quantity to Add to Cart</th>
+                        <th scope="col">Quantity to Add to Basket</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,21 +35,13 @@
                     <td scope="row" th:text="${item.name}"></td>
                     <td th:text="${item.cost}"></td>
                     <td>
-                        <form>
-                            <p>Quantity: <input type="text"/><input type="submit" value="Add to Basket"/></p>
-                        </form>
+                        <input type="text" th:placeholder="${item.amountToBuy}" name="quantity"/>
                     </td>
                 </tr>
                 </tbody>
             </table>
-            <!--<form action="#" th:action="@{/supermarket}" th:object="${superMarket}" method="post">
-                <p>Id: <input type="text" th:field="*{id}"/></p>
-                <p>Name: <input type="text" th:field="*{name}"/></p>
                 <p><input type="submit" value="Submit"/><input type="reset" value="Reset"/></p>
-            </form>-->
-        </div>
-        <div>
-            <input type="submit" value="Check Out"/>
+            </form>
         </div>
     </body>
 

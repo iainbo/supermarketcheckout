@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableAutoConfiguration
 @ComponentScan("org.iainbo")
-@EntityScan(basePackages = {"org.iainbo.supermarketcheckout.entities"})
+@EntityScan(basePackages = {"org.iainbo.supermarketcheckout.model"})
 @EnableJpaRepositories(basePackages = {"org.iainbo.supermarketcheckout.repositories"})
 public class Application {
 

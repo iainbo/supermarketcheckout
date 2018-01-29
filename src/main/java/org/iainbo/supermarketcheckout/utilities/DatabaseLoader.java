@@ -1,7 +1,7 @@
 package org.iainbo.supermarketcheckout.utilities;
 
-import org.iainbo.supermarketcheckout.entities.Item;
-import org.iainbo.supermarketcheckout.entities.Offer;
+import org.iainbo.supermarketcheckout.model.Item;
+import org.iainbo.supermarketcheckout.model.Offer;
 import org.iainbo.supermarketcheckout.repositories.ItemRepository;
 import org.iainbo.supermarketcheckout.repositories.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class DatabaseLoader implements CommandLineRunner{
     }
 
     @Override
-    public void run(String... strings) throws Exception{
+    public void run(String... strings){
         this.itemRepository.save(biscuits);
         this.itemRepository.save(juice);
         this.itemRepository.save(microwaveMeal);

@@ -1,7 +1,7 @@
 package service;
 
-import org.iainbo.supermarketcheckout.entities.Item;
-import org.iainbo.supermarketcheckout.entities.Offer;
+import org.iainbo.supermarketcheckout.model.Item;
+import org.iainbo.supermarketcheckout.model.Offer;
 import org.iainbo.supermarketcheckout.repositories.ItemRepository;
 import org.iainbo.supermarketcheckout.repositories.OfferRepository;
 import org.iainbo.supermarketcheckout.service.BasketService;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BasketService.class)
-@EntityScan("org.iainbo.supermarketcheckout.entities")
+@EntityScan("org.iainbo.supermarketcheckout.model")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class BasketServiceTest {
 
@@ -41,8 +41,8 @@ public class BasketServiceTest {
     private Item biscuitItem2;
     private Item juiceItem;
     private Item microwaveItem;
-    List<Offer> juiceOffers;
-    List<Offer> microWaveOffers;
+    private List<Offer> juiceOffers;
+    private List<Offer> microWaveOffers;
 
 
     @Before

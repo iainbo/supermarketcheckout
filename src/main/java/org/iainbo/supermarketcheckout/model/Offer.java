@@ -1,4 +1,4 @@
-package org.iainbo.supermarketcheckout.entities;
+package org.iainbo.supermarketcheckout.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

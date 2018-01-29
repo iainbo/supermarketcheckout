@@ -1,7 +1,7 @@
 package org.iainbo.supermarketcheckout.repositories;
 
-import org.iainbo.supermarketcheckout.entities.Item;
-import org.iainbo.supermarketcheckout.entities.Offer;
+import org.iainbo.supermarketcheckout.model.Item;
+import org.iainbo.supermarketcheckout.model.Offer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
