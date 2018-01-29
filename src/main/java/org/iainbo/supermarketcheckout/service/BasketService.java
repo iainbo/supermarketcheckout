@@ -1,7 +1,7 @@
 package org.iainbo.supermarketcheckout.service;
 
-import org.iainbo.supermarketcheckout.entities.Item;
-import org.iainbo.supermarketcheckout.entities.Offer;
+import org.iainbo.supermarketcheckout.model.Item;
+import org.iainbo.supermarketcheckout.model.Offer;
 import org.iainbo.supermarketcheckout.repositories.ItemRepository;
 import org.iainbo.supermarketcheckout.repositories.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,9 @@ import java.util.List;
 
 @Service
 public class BasketService {
+
+    private static final String BUY_TWO_GET_ONE_FREE = "B2G1F";
+    private static final String BUY_TWO_FOR_FIVE = "2FOR5";
 
     @Autowired
     private ItemRepository itemRepository;
@@ -70,12 +73,12 @@ public class BasketService {
         BigDecimal newTotal = BigDecimal.ZERO;
         Item item = itemRepository.findById(itemId);
         long noOfTimesOfferToBeApplied = basket.get(itemId) / 2;
-        if(offer.getName().equals("B2G1F")){
+        if(offer.getName().equals(BUY_TWO_GET_ONE_FREE)){
             newTotal = totalCostBeforeDiscount();
             for(int i = 0; i < noOfTimesOfferToBeApplied; i++){
                 addItemToBasket(item);
             }
-        }if(offer.getName().equals("2FOR5")){
+        }if(offer.getName().equals(BUY_TWO_FOR_FIVE)){
             if(basket.get(itemId) == 2){
                 return offer.getNewCost();
             }else{
