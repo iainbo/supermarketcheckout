@@ -1,18 +1,24 @@
 package org.iainbo.supermarketcheckout.service;
 
 import org.iainbo.supermarketcheckout.entities.Item;
+import org.iainbo.supermarketcheckout.entities.Offer;
 import org.iainbo.supermarketcheckout.repositories.ItemRepository;
+import org.iainbo.supermarketcheckout.repositories.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class BasketService {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    @Autowired
+    private OfferRepository offerRepository;
 
     private HashMap<Long, Long> basket = new HashMap<>();
 
@@ -33,7 +39,7 @@ public class BasketService {
     }
 
     public BigDecimal totalCostBeforeDiscount(){
-        BigDecimal total = BigDecimal.valueOf(0L);
+        BigDecimal total = BigDecimal.ZERO;
 
         for(Long itemId : basket.keySet()){
             Long quantity = basket.get(itemId);
@@ -45,20 +51,30 @@ public class BasketService {
         return total;
     }
 
-    public void applyOffers(){
-        for(Long itemId : basket.keySet()){
+    public BigDecimal applyOfferAndGetNewTotal(){
+        BigDecimal total = BigDecimal.ZERO;
+        List<Offer> allOffers = offerRepository.findAll();
 
-            /*if(itemHasOffer()){
+            for(Long itemId : basket.keySet()){
+                for(Offer offer : allOffers){
+                    if((offer.getItem().getId() ==  itemId) && (basket.get(itemId) >= offer.getAmountToQualify())){
+                        total = applyOffer(offer, itemId);
+                    }
+                }
+            }
 
-            }*/
+        return total;
+    }
+
+    private BigDecimal applyOffer(Offer offer, Long itemId){
+        BigDecimal newTotal = BigDecimal.ZERO;
+        Item item = itemRepository.findById(itemId);
+        if(offer.getName().equals("BOGOF")){
+            newTotal = totalCostBeforeDiscount();
+            addItemToBasket(item);
+        }if(offer.getName().equals("2FOR5")){
+            newTotal = totalCostBeforeDiscount().subtract(BigDecimal.valueOf(2));
         }
-    }
-
-    private boolean itemHasOffer(Item item){
-        return false;
-    }
-
-    public BigDecimal totalCostAfterDiscountApplied(){
-        return BigDecimal.ZERO;
+        return newTotal;
     }
 }

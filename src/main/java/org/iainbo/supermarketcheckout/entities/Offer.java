@@ -16,6 +16,10 @@ public class Offer {
     @JoinColumn(name="ITEM_ID")
     private Item item;
 
+    @Column
+    @NotNull
+    private String name;
+
     @Column(name="DESCRIPTION")
     @NotNull
     private String description;
@@ -32,11 +36,20 @@ public class Offer {
 
     }
 
-    public Offer(Item item, String description, BigDecimal newCost, Long amountToQualify){
+    public Offer(String name, Item item, String description, BigDecimal newCost, Long amountToQualify){
+        this.name = name;
         this.item = item;
         this.description = description;
         this.newCost = newCost;
         this.amountToQualify = amountToQualify;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getId() {

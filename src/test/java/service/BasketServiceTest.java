@@ -1,7 +1,9 @@
 package service;
 
 import org.iainbo.supermarketcheckout.entities.Item;
+import org.iainbo.supermarketcheckout.entities.Offer;
 import org.iainbo.supermarketcheckout.repositories.ItemRepository;
+import org.iainbo.supermarketcheckout.repositories.OfferRepository;
 import org.iainbo.supermarketcheckout.service.BasketService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +17,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -29,6 +33,9 @@ public class BasketServiceTest {
 
     @MockBean
     private ItemRepository mockItemRepository;
+
+    @MockBean
+    private OfferRepository mockOfferRepository;
 
     private Item biscuitItem1;
     private Item biscuitItem2;
@@ -121,12 +128,23 @@ public class BasketServiceTest {
 
     }
 
-    /*@Test
+    @Test
     public void testApplyingJuiceOffer(){
         Item juiceItem2 = new Item("Can of Juice", BigDecimal.valueOf(0.53));
+        juiceItem2.setId(juiceItem.getId());
+
+        Offer juiceOffer = new Offer("BOGOF", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
+        juiceOffer.setId(1L);
+
+        List<Offer> offers = new ArrayList<>();
+        offers.add(juiceOffer);
 
         basketService.addItemToBasket(juiceItem);
         basketService.addItemToBasket(juiceItem2);
+
+        when(mockItemRepository.findById(juiceItem.getId())).thenReturn(juiceItem);
+        when(mockItemRepository.findById(juiceItem2.getId())).thenReturn(juiceItem2);
+        when(mockOfferRepository.findAll()).thenReturn(offers);
 
         BigDecimal expectedTotal = juiceItem.getCost().add(juiceItem2.getCost());
 
@@ -134,10 +152,12 @@ public class BasketServiceTest {
 
         Assert.assertEquals(Long.valueOf(2), amountInBasket);
 
-        basketService.applyOffers();
+        BigDecimal actualCostBeforeDiscount = basketService.totalCostBeforeDiscount();
+        BigDecimal actualCostAfterDiscount = basketService.applyOfferAndGetNewTotal();
 
-        Assert.assertEquals(basketService.getItemCount(), 3);
-        Assert.assertEquals(basketService.totalCostAfterDiscountApplied(), expectedTotal);
-    }*/
+        Assert.assertEquals(Long.valueOf(3), basketService.getBasket().get(juiceItem.getId()));
+        Assert.assertEquals(expectedTotal, actualCostAfterDiscount);
+        Assert.assertEquals(actualCostBeforeDiscount, actualCostAfterDiscount);
+    }
 
 }
