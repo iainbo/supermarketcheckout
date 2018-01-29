@@ -41,7 +41,8 @@ public class BasketServiceTest {
     private Item biscuitItem2;
     private Item juiceItem;
     private Item microwaveItem;
-
+    List<Offer> juiceOffers;
+    List<Offer> microWaveOffers;
 
 
     @Before
@@ -54,6 +55,18 @@ public class BasketServiceTest {
         juiceItem.setId(4L);
         microwaveItem = new Item("Micorwave Meal", BigDecimal.valueOf(3.50));
         microwaveItem.setId(5L);
+
+        Offer juiceOffer = new Offer("B2G1F", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
+        juiceOffer.setId(1L);
+
+        juiceOffers = new ArrayList<>();
+        juiceOffers.add(juiceOffer);
+
+        Offer microwaveMealOffer = new Offer("2FOR5", microwaveItem, "2 for £5", BigDecimal.valueOf(5.00), 2L);
+        microwaveMealOffer.setId(1L);
+
+        microWaveOffers = new ArrayList<>();
+        microWaveOffers.add(microwaveMealOffer);
     }
 
     @Test
@@ -133,18 +146,12 @@ public class BasketServiceTest {
         Item juiceItem2 = new Item("Can of Juice", BigDecimal.valueOf(0.53));
         juiceItem2.setId(juiceItem.getId());
 
-        Offer juiceOffer = new Offer("B2G1F", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
-        juiceOffer.setId(1L);
-
-        List<Offer> offers = new ArrayList<>();
-        offers.add(juiceOffer);
-
         basketService.addItemToBasket(juiceItem);
         basketService.addItemToBasket(juiceItem2);
 
         when(mockItemRepository.findById(juiceItem.getId())).thenReturn(juiceItem);
         when(mockItemRepository.findById(juiceItem2.getId())).thenReturn(juiceItem2);
-        when(mockOfferRepository.findAll()).thenReturn(offers);
+        when(mockOfferRepository.findAll()).thenReturn(juiceOffers);
 
         BigDecimal expectedTotal = juiceItem.getCost().add(juiceItem2.getCost());
 
@@ -171,12 +178,6 @@ public class BasketServiceTest {
         Item juiceItem4 = new Item("Can of Juice", BigDecimal.valueOf(0.53));
         juiceItem4.setId(juiceItem.getId());
 
-        Offer juiceOffer = new Offer("B2G1F", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
-        juiceOffer.setId(1L);
-
-        List<Offer> offers = new ArrayList<>();
-        offers.add(juiceOffer);
-
         basketService.addItemToBasket(juiceItem);
         basketService.addItemToBasket(juiceItem2);
         basketService.addItemToBasket(juiceItem3);
@@ -186,7 +187,7 @@ public class BasketServiceTest {
         when(mockItemRepository.findById(juiceItem2.getId())).thenReturn(juiceItem2);
         when(mockItemRepository.findById(juiceItem3.getId())).thenReturn(juiceItem3);
         when(mockItemRepository.findById(juiceItem4.getId())).thenReturn(juiceItem4);
-        when(mockOfferRepository.findAll()).thenReturn(offers);
+        when(mockOfferRepository.findAll()).thenReturn(juiceOffers);
 
         BigDecimal expectedTotal = juiceItem.getCost().add(juiceItem2.getCost().add(juiceItem3.getCost()).add(juiceItem4.getCost()));
 
@@ -200,6 +201,99 @@ public class BasketServiceTest {
         Assert.assertEquals(Long.valueOf(6), basketService.getBasket().get(juiceItem.getId()));
         Assert.assertEquals(expectedTotal, actualCostAfterDiscount);
         Assert.assertEquals(actualCostBeforeDiscount, actualCostAfterDiscount);
+    }
+
+    @Test
+    public void testApplyingMicrowaveMealOfferToTwoItems(){
+        Item microwaveItem2 = new Item("Microwave Meal", BigDecimal.valueOf(3.50));
+        microwaveItem2.setId(microwaveItem.getId());
+
+        basketService.addItemToBasket(microwaveItem);
+        basketService.addItemToBasket(microwaveItem2);
+
+        when(mockItemRepository.findById(microwaveItem.getId())).thenReturn(microwaveItem);
+        when(mockItemRepository.findById(microwaveItem2.getId())).thenReturn(microwaveItem2);
+        when(mockOfferRepository.findAll()).thenReturn(microWaveOffers);
+
+        BigDecimal expectedTotal = BigDecimal.valueOf(5.00);
+
+        Long amountInBasket = basketService.getBasket().get(microwaveItem.getId());
+
+        Assert.assertEquals(Long.valueOf(2), amountInBasket);
+
+        BigDecimal actualCostBeforeDiscount = basketService.totalCostBeforeDiscount();
+        BigDecimal actualCostAfterDiscount = basketService.applyOfferAndGetNewTotal();
+
+        Assert.assertEquals(Long.valueOf(2), basketService.getBasket().get(microwaveItem.getId()));
+        Assert.assertEquals(expectedTotal, actualCostAfterDiscount);
+        Assert.assertNotEquals(actualCostBeforeDiscount, actualCostAfterDiscount);
+    }
+
+    @Test
+    public void testApplyingMicrowaveMealOfferToThreeItems(){
+        Item microwaveItem2 = new Item("Microwave Meal", BigDecimal.valueOf(3.50));
+        microwaveItem2.setId(microwaveItem.getId());
+
+        Item microwaveItem3 = new Item("Microwave Meal", BigDecimal.valueOf(3.50));
+        microwaveItem3.setId(microwaveItem.getId());
+
+        basketService.addItemToBasket(microwaveItem);
+        basketService.addItemToBasket(microwaveItem2);
+        basketService.addItemToBasket(microwaveItem3);
+
+        when(mockItemRepository.findById(microwaveItem.getId())).thenReturn(microwaveItem);
+        when(mockItemRepository.findById(microwaveItem2.getId())).thenReturn(microwaveItem2);
+        when(mockItemRepository.findById(microwaveItem3.getId())).thenReturn(microwaveItem3);
+        when(mockOfferRepository.findAll()).thenReturn(microWaveOffers);
+
+        BigDecimal expectedTotal = BigDecimal.valueOf(8.50);
+
+        Long amountInBasket = basketService.getBasket().get(microwaveItem.getId());
+
+        Assert.assertEquals(Long.valueOf(3), amountInBasket);
+
+        BigDecimal actualCostBeforeDiscount = basketService.totalCostBeforeDiscount();
+        BigDecimal actualCostAfterDiscount = basketService.applyOfferAndGetNewTotal();
+
+        Assert.assertEquals(Long.valueOf(3), basketService.getBasket().get(microwaveItem.getId()));
+        Assert.assertEquals(expectedTotal, actualCostAfterDiscount);
+        Assert.assertNotEquals(actualCostBeforeDiscount, actualCostAfterDiscount);
+    }
+
+    @Test
+    public void testApplyingMicrowaveMealOfferToFourItems(){
+        Item microwaveItem2 = new Item("Microwave Meal", BigDecimal.valueOf(3.50));
+        microwaveItem2.setId(microwaveItem.getId());
+
+        Item microwaveItem3 = new Item("Microwave Meal", BigDecimal.valueOf(3.50));
+        microwaveItem3.setId(microwaveItem.getId());
+
+        Item microwaveItem4 = new Item("Microwave Meal", BigDecimal.valueOf(3.50));
+        microwaveItem4.setId(microwaveItem.getId());
+
+        basketService.addItemToBasket(microwaveItem);
+        basketService.addItemToBasket(microwaveItem2);
+        basketService.addItemToBasket(microwaveItem3);
+        basketService.addItemToBasket(microwaveItem4);
+
+        when(mockItemRepository.findById(microwaveItem.getId())).thenReturn(microwaveItem);
+        when(mockItemRepository.findById(microwaveItem2.getId())).thenReturn(microwaveItem2);
+        when(mockItemRepository.findById(microwaveItem3.getId())).thenReturn(microwaveItem3);
+        when(mockItemRepository.findById(microwaveItem3.getId())).thenReturn(microwaveItem4);
+        when(mockOfferRepository.findAll()).thenReturn(microWaveOffers);
+
+        BigDecimal expectedTotal = BigDecimal.valueOf(10.00);
+
+        Long amountInBasket = basketService.getBasket().get(microwaveItem.getId());
+
+        Assert.assertEquals(Long.valueOf(4), amountInBasket);
+
+        BigDecimal actualCostBeforeDiscount = basketService.totalCostBeforeDiscount();
+        BigDecimal actualCostAfterDiscount = basketService.applyOfferAndGetNewTotal();
+
+        Assert.assertEquals(Long.valueOf(4), basketService.getBasket().get(microwaveItem.getId()));
+        Assert.assertEquals(expectedTotal, actualCostAfterDiscount);
+        Assert.assertNotEquals(actualCostBeforeDiscount, actualCostAfterDiscount);
     }
 
 }
