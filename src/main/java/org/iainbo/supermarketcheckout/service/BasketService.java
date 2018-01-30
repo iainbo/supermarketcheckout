@@ -65,7 +65,7 @@ public class BasketService {
                     Offer offer = getOfferForItem(allOffers, item);
                     total = total.add(applyOffer(offer, item));
                 }else{
-                    total = total.add(item.getCost());
+                    total = total.add(item.getCost()).multiply(BigDecimal.valueOf(basket.get(item.getId())));
                 }
 
             }
