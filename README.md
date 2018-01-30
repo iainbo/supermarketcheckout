@@ -1,12 +1,12 @@
-#Springboot and Thymeleaf Supermarket checkout
+# Springboot and Thymeleaf Supermarket checkout
 
 
-#About
+# About
 This application was made using Springboot and Thymeleaf.
 It utilizes an H2 in memory database as well as Spring data JPA and Spring Rest.
 
 
-#How to run the application
+# How to run the application
 The application uses maven to build, test and run.
 
 On the command line, go to the root of the folder containing the application and enter:
