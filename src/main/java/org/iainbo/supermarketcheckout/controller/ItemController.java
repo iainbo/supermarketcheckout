@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Controller
@@ -45,14 +46,18 @@ public class ItemController {
             }
         }
 
-        basket.setTotalCost(basketService.totalCostBeforeDiscount());
-        basket.setCostAfterOffersApplied(basketService.applyOfferAndGetNewTotal());
+        BigDecimal totalCostBeforeDiscount = basketService.totalCostBeforeDiscount();
+        BigDecimal totalCostAfterDiscount = basketService.applyOfferAndGetNewTotal();
+
+        basket.setTotalCost(totalCostBeforeDiscount);
+        basket.setCostAfterOffersApplied(totalCostAfterDiscount);
         Long noOfItems = 0L;
 
         for(Long amount : basketService.getBasket().values()){
             noOfItems = noOfItems + amount;
         }
         basket.setNoOfItemsInBasket(noOfItems);
+        basket.setTotalSaving(totalCostBeforeDiscount.subtract(totalCostAfterDiscount));
         basketService.clear();
         return "checkOutResult";
     }

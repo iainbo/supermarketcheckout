@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class Basket {
     private BigDecimal totalCost;
     private BigDecimal costAfterOffersApplied;
+    private BigDecimal totalSaving;
     private Long noOfItemsInBasket;
 
     public BigDecimal getTotalCost() {
@@ -29,5 +30,13 @@ public class Basket {
 
     public void setNoOfItemsInBasket(Long noOfItemsInBasket) {
         this.noOfItemsInBasket = noOfItemsInBasket;
+    }
+
+    public BigDecimal getTotalSaving() {
+        return totalSaving;
+    }
+
+    public void setTotalSaving(BigDecimal totalSaving) {
+        this.totalSaving = totalSaving;
     }
 }
