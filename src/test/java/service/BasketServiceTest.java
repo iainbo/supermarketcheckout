@@ -77,6 +77,17 @@ public class BasketServiceTest {
     }
 
     @Test
+    public void testClearingBasket(){
+        basketService.addItemToBasket(biscuitItem1);
+        basketService.addItemToBasket(juiceItem);
+
+        Assert.assertEquals(2, basketService.getBasket().size());
+        basketService.clear();
+        Assert.assertEquals(0, basketService.getBasket().size());
+
+    }
+
+    @Test
     public void testAddingTwoOfTheSameItem(){
         basketService.addItemToBasket(biscuitItem1);
         basketService.addItemToBasket(biscuitItem2);

@@ -48,6 +48,7 @@ public class ItemController {
 
         basket.setTotalCost(basketService.totalCostBeforeDiscount());
         basket.setCostAfterOffersApplied(basketService.applyOfferAndGetNewTotal());
+        basketService.clear();
         return "checkOutResult";
     }
 }

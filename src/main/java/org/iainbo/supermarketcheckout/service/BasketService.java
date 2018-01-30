@@ -65,7 +65,6 @@ public class BasketService {
                     }
                 }
             }
-        basket.clear();
         return total;
     }
 
@@ -91,5 +90,9 @@ public class BasketService {
             }
         }
         return newTotal;
+    }
+
+    public void clear(){
+        basket.clear();
     }
 }
