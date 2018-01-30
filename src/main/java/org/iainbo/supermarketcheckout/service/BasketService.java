@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BasketService {
@@ -59,32 +60,52 @@ public class BasketService {
         List<Offer> allOffers = offerRepository.findAll();
 
             for(Long itemId : basket.keySet()){
-                for(Offer offer : allOffers){
-                    if((offer.getItem().getId() ==  itemId) && (basket.get(itemId) >= offer.getAmountToQualify())){
-                        total = applyOffer(offer, itemId);
-                    }
+                Item item = itemRepository.findById(itemId);
+                if(offerFound(allOffers, item)){
+                    Offer offer = getOfferForItem(allOffers, item);
+                    total = total.add(applyOffer(offer, item));
+                }else{
+                    total = total.add(item.getCost());
                 }
+
             }
         return total;
     }
 
-    private BigDecimal applyOffer(Offer offer, Long itemId){
+    private List<Offer> checkForOfferInList(List<Offer> offers, Item item){
+        return offers.stream().filter(offer -> offer.getItem().getId().equals(item.getId())).collect(Collectors.toList());
+    }
+
+    private Offer getOfferForItem(List<Offer> offers, Item item){
+        List<Offer> result = checkForOfferInList(offers, item);
+        return result.get(0);
+    }
+
+    private boolean offerFound(List<Offer> offers, Item item){
+        List<Offer> result = checkForOfferInList(offers, item);
+        if(result.size() == 1){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private BigDecimal applyOffer(Offer offer, Item item){
         BigDecimal newTotal = BigDecimal.ZERO;
-        Item item = itemRepository.findById(itemId);
-        long noOfTimesOfferToBeApplied = basket.get(itemId) / 2;
+        long noOfTimesOfferToBeApplied = basket.get(item.getId()) / 2;
         if(offer.getName().equals(BUY_TWO_GET_ONE_FREE)){
-            newTotal = totalCostBeforeDiscount();
+            newTotal = item.getCost().multiply(BigDecimal.valueOf(basket.get(item.getId())));
             for(int i = 0; i < noOfTimesOfferToBeApplied; i++){
                 addItemToBasket(item);
             }
         }if(offer.getName().equals(BUY_TWO_FOR_FIVE)){
-            if(basket.get(itemId) == 2){
+            if(basket.get(item.getId()) == 2){
                 return offer.getNewCost();
             }else{
                 for(int i = 0; i < noOfTimesOfferToBeApplied; i++){
                     newTotal = newTotal.add(offer.getNewCost());
                 }
-                if(basket.get(itemId) % 2 > 0){
+                if(basket.get(item.getId()) % 2 > 0){
                     newTotal = newTotal.add(item.getCost());
                 }
             }

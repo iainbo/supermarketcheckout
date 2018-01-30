@@ -41,8 +41,14 @@ public class BasketServiceTest {
     private Item biscuitItem2;
     private Item juiceItem;
     private Item microwaveItem;
+
     private List<Offer> juiceOffers;
     private List<Offer> microWaveOffers;
+    private List<Offer> allOffers;
+
+    private Offer microwaveMealOffer;
+    private Offer juiceOffer;
+
 
 
     @Before
@@ -56,17 +62,21 @@ public class BasketServiceTest {
         microwaveItem = new Item("Micorwave Meal", BigDecimal.valueOf(3.50));
         microwaveItem.setId(5L);
 
-        Offer juiceOffer = new Offer("B2G1F", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
+        juiceOffer = new Offer("B2G1F", juiceItem, "Buy 2 get 1 Free", BigDecimal.ZERO, 2L);
         juiceOffer.setId(1L);
 
         juiceOffers = new ArrayList<>();
         juiceOffers.add(juiceOffer);
 
-        Offer microwaveMealOffer = new Offer("2FOR5", microwaveItem, "2 for £5", BigDecimal.valueOf(5.00), 2L);
-        microwaveMealOffer.setId(1L);
+        microwaveMealOffer = new Offer("2FOR5", microwaveItem, "2 for £5", BigDecimal.valueOf(5.00), 2L);
+        microwaveMealOffer.setId(2L);
 
         microWaveOffers = new ArrayList<>();
         microWaveOffers.add(microwaveMealOffer);
+
+        allOffers = new ArrayList<>();
+        allOffers.add(microwaveMealOffer);
+        allOffers.add(juiceOffer);
     }
 
     @Test
@@ -305,6 +315,40 @@ public class BasketServiceTest {
         Assert.assertEquals(Long.valueOf(4), basketService.getBasket().get(microwaveItem.getId()));
         Assert.assertEquals(expectedTotal, actualCostAfterDiscount);
         Assert.assertNotEquals(actualCostBeforeDiscount, actualCostAfterDiscount);
+    }
+
+    @Test
+    public void testAddingMultipleItemsOfDifferentTypes(){
+
+        Item juiceItem2 = new Item("Can of Juice", BigDecimal.valueOf(0.53));
+        juiceItem2.setId(juiceItem.getId());
+
+        Item microwaveItem2 = new Item("Microwave Meal", BigDecimal.valueOf(3.50));
+        microwaveItem2.setId(microwaveItem.getId());
+
+        basketService.addItemToBasket(biscuitItem1);
+        basketService.addItemToBasket(juiceItem);
+        basketService.addItemToBasket(juiceItem2);
+        basketService.addItemToBasket(microwaveItem);
+        basketService.addItemToBasket(microwaveItem2);
+
+        when(mockItemRepository.findById(biscuitItem1.getId())).thenReturn(biscuitItem1);
+        when(mockItemRepository.findById(juiceItem.getId())).thenReturn(juiceItem);
+        when(mockItemRepository.findById(juiceItem2.getId())).thenReturn(juiceItem2);
+        when(mockItemRepository.findById(microwaveItem.getId())).thenReturn(microwaveItem);
+        when(mockItemRepository.findById(microwaveItem2.getId())).thenReturn(microwaveItem2);
+
+        when(mockOfferRepository.findAll()).thenReturn(allOffers);
+        when(mockOfferRepository.findByItem(microwaveItem)).thenReturn(microwaveMealOffer);
+        when(mockOfferRepository.findByItem(juiceItem)).thenReturn(juiceOffer);
+
+        BigDecimal expectedTotalWithoutOffers = biscuitItem1.getCost().add(juiceItem.getCost()).add(juiceItem2.getCost()).add(microwaveItem.getCost()).add(microwaveItem2.getCost());
+
+        Assert.assertEquals(expectedTotalWithoutOffers, basketService.totalCostBeforeDiscount());
+
+        BigDecimal totalWithOffers = BigDecimal.valueOf(7.35);
+
+        Assert.assertEquals(totalWithOffers, basketService.applyOfferAndGetNewTotal());
     }
 
 }
