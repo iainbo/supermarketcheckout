@@ -1,12 +1,11 @@
 package org.iainbo.supermarketcheckout.model;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public class Basket {
     private BigDecimal totalCost;
     private BigDecimal costAfterOffersApplied;
-    private List<Item> items;
+    private Long noOfItemsInBasket;
 
     public BigDecimal getTotalCost() {
         return totalCost;
@@ -24,11 +23,11 @@ public class Basket {
         this.costAfterOffersApplied = costAfterOffersApplied;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public Long getNoOfItemsInBasket() {
+        return noOfItemsInBasket;
     }
 
-    public void setItems(List<Item> basket) {
-        this.items = basket;
+    public void setNoOfItemsInBasket(Long noOfItemsInBasket) {
+        this.noOfItemsInBasket = noOfItemsInBasket;
     }
 }

@@ -26,7 +26,6 @@ public class ItemController {
     @RequestMapping(value="/supermarket")
     public String listItems(Model model){
         Basket basket = new Basket();
-        basket.setItems(itemRepository.findAll());
         model.addAttribute("basket", basket);
         model.addAttribute("items", itemRepository.findAll());
         return "supermarket";
@@ -48,6 +47,12 @@ public class ItemController {
 
         basket.setTotalCost(basketService.totalCostBeforeDiscount());
         basket.setCostAfterOffersApplied(basketService.applyOfferAndGetNewTotal());
+        Long noOfItems = 0L;
+
+        for(Long amount : basketService.getBasket().values()){
+            noOfItems = noOfItems + amount;
+        }
+        basket.setNoOfItemsInBasket(noOfItems);
         basketService.clear();
         return "checkOutResult";
     }

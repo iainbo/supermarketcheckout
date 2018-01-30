@@ -8,6 +8,7 @@
 
     <body>
         <h1>Receipt</h1>
+        <p th:text="'No of Items in Basket: ' + ${basket.noOfItemsInBasket}"/>
         <p th:text="'Total before discount: ' + ${basket.totalCost}"/>
         <p th:text="'Total after discount applied: '+ ${basket.costAfterOffersApplied}"/>
         <a href="/supermarket">Shop again</a>
