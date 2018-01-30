@@ -35,7 +35,8 @@
                     <td scope="row" th:text="${item.name}"></td>
                     <td th:text="${item.cost}"></td>
                     <td>
-                        <input type="text" th:placeholder="${item.amountToBuy}" name="quantity"/>
+                        <input type="hidden" th:value="${item.id}" name="itemId"/>
+                        <input type="text" th:placeholder="0" name="quantity"/>
                     </td>
                 </tr>
                 </tbody>

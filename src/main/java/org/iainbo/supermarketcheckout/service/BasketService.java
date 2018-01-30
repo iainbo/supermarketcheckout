@@ -65,7 +65,7 @@ public class BasketService {
                     }
                 }
             }
-
+        basket.clear();
         return total;
     }
 

@@ -20,8 +20,6 @@ public class Item {
     @NotNull
     private BigDecimal cost;
 
-    private int amountToBuy;
-
     public Item(){
 
     }
@@ -29,15 +27,6 @@ public class Item {
     public Item(String name, BigDecimal cost){
         this.name = name;
         this.cost = cost;
-        this.amountToBuy = 0;
-    }
-
-    public int getAmountToBuy() {
-        return amountToBuy;
-    }
-
-    public void setAmountToBuy(int amountToBuy) {
-        this.amountToBuy = amountToBuy;
     }
 
     public Long getId() {

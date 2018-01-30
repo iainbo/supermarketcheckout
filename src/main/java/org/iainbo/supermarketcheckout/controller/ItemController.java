@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 @Controller
 public class ItemController {
 
@@ -30,7 +33,18 @@ public class ItemController {
     }
 
     @RequestMapping(value="/processForm", method = RequestMethod.POST)
-    public String basketSubmit(@ModelAttribute("basket") Basket basket, @ModelAttribute("item") Item item){
+    public String basketSubmit(@ModelAttribute("basket") Basket basket, HttpServletRequest request){
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        String[] itemIdS = parameterMap.get("itemId");
+        String[] quantities = parameterMap.get("quantity");
+        for (int i = 0; i < quantities.length; i++) {
+            if (!quantities[i].equals("")){
+                Item item = itemRepository.findById(Long.valueOf(itemIdS[i]));
+                for (int j = 0; j < Long.valueOf(quantities[i]); j++) {
+                    basketService.addItemToBasket(item);
+                }
+            }
+        }
 
         basket.setTotalCost(basketService.totalCostBeforeDiscount());
         basket.setCostAfterOffersApplied(basketService.applyOfferAndGetNewTotal());
